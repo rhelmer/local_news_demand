@@ -7,11 +7,11 @@ module.exports = {
   verbose: true,
   // Command options:
   build: {
-    overwriteDest: true,
+    overwriteDest: true
   },
   run: {
     firefox: "nightly",
-    pref: ["extensions.experiments.enabled=true"],
+    pref: ["extensions.experiments.enabled=true"]
   },
   ignoreFiles: [
     "bin",
@@ -30,6 +30,6 @@ module.exports = {
     "README.md",
     "rollup.config.*",
     "web-ext-config.js",
-    "public/**/*.map",
-  ],
-};
+    "public/**/*.map"
+  ]
+}
