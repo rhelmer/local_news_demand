@@ -6,7 +6,7 @@
  * @module WebScience.Measurements.PageNav
  */
 
-import * as WebScience from './WebScience.js'
+import * as WebScience from "./WebScience.js"
 
 let initialized = false
 
@@ -18,41 +18,40 @@ let initialized = false
  * @param {Boolean} is_dev_mode - Determines where to store data
  */
 export async function startMeasurement ({
-    domains = [],
-    rally: rally,
-    is_dev_mode: is_dev_mode
+  domains = [],
+  rally,
+  is_dev_mode
 }) {
   // If this module has been initialized, don't do it again
-  if (initialized){
-    return   
+  if (initialized) {
+    return
   }
   initialized = true
 
-  //Handles PageNavigation callbacks
+  // Handles PageNavigation callbacks
   WebScience.Measurements.PageNavigation.onPageData.addListener(async (pageData) => {
-    //Get Survey Status
-    let surveyStatus  = await WebScience.Utilities.UserSurvey.getSurveyStatus()
+    // Get Survey Status
+    const surveyStatus = await WebScience.Utilities.UserSurvey.getSurveyStatus()
     // If survey is completed
-    if (surveyStatus=="completed"){
+    if (surveyStatus == "completed") {
       // The pageID here is a unique key to be used for local key-value storage
-      let pageId = "WebScience.PageNav."+pageData.pageId.toString()
-      //Grab userID and set it in JSON
-      let userID = await WebScience.Utilities.UserSurvey.getSurveyId()
-      pageData['userID'] = ''+userID
-      //Set the type to match other collection modules
-      pageData['type'] = 'WebScience.pageNav'
+      const pageId = "WebScience.PageNav." + pageData.pageId.toString()
+      // Grab userID and set it in JSON
+      const userID = await WebScience.Utilities.UserSurvey.getSurveyId()
+      pageData.userID = "" + userID
+      // Set the type to match other collection modules
+      pageData.type = "WebScience.pageNav"
 
-      //If we're in dev mode, store locally. Otherwise, ping rally.
-      if (is_dev_mode){
-        browser.storage.local.set({[pageId]:pageData})
+      // If we're in dev mode, store locally. Otherwise, ping rally.
+      if (is_dev_mode) {
+        browser.storage.local.set({ [pageId]: pageData })
       } else {
-        rally.sendPing("pageNav", pageData);
+        rally.sendPing("pageNav", pageData)
       }
     } else {
       console.log("Survey not completed")
     }
   }, {
     matchPatterns: WebScience.Utilities.Matching.domainsToMatchPatterns(domains)
-  });
+  })
 }
-

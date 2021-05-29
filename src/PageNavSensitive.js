@@ -8,8 +8,7 @@
  * @module WebScience.Measurements.PageNavSensitive
  */
 
-import * as WebScience from './WebScience.js'
-
+import * as WebScience from "./WebScience.js"
 
 let initialized = false
 
@@ -21,54 +20,52 @@ let initialized = false
  * @param {Boolean} is_dev_mode - Determines where to store data
  */
 export async function startMeasurement ({
-    domains = [],
-    rally: rally,
-    is_dev_mode: is_dev_mode
+  domains = [],
+  rally,
+  is_dev_mode
 }) {
-
   // If already initialized, don't do it again
-  if (initialized){
-    return   
+  if (initialized) {
+    return
   }
   initialized = true
 
-  //Handles onPageData callbacks
+  // Handles onPageData callbacks
   WebScience.Measurements.PageNavigation.onPageData.addListener(async (pageData) => {
     // Get survey status
-    let surveyStatus  = await WebScience.Utilities.UserSurvey.getSurveyStatus()
+    const surveyStatus = await WebScience.Utilities.UserSurvey.getSurveyStatus()
     // If Completed
-    if (surveyStatus=="completed"){
+    if (surveyStatus == "completed") {
       // PageID here is a unique key for local key-value storage
-      let pageId = "WebScience.PageNav."+pageData.pageId.toString()
+      const pageId = "WebScience.PageNav." + pageData.pageId.toString()
       // Grab userID and set it in data
-      let userID = await WebScience.Utilities.UserSurvey.getSurveyId()
-      pageData['userID'] = ''+userID
-      
-      //Trim "url" and "referrer" to their base URL
-      trimmedURL = fullURLtoBaseURL(pageData.url)
-      delete pageData.url
-      pageData['url'] = trimmedURL
+      const userID = await WebScience.Utilities.UserSurvey.getSurveyId()
+      pageData.userID = "" + userID
 
-      trimmedReferrer = fullURLtoBaseURL(pageData.referrer)
+      // Trim "url" and "referrer" to their base URL
+      const trimmedURL = fullURLtoBaseURL(pageData.url)
+      delete pageData.url
+      pageData.url = trimmedURL
+
+      const trimmedReferrer = fullURLtoBaseURL(pageData.referrer)
       delete pageData.referrer
-      pageData['referrer'] = trimmedReferrer
-      
-      //Set page type to match other collection modules
-      pageData['type'] = 'WebScience.pageNav'
+      pageData.referrer = trimmedReferrer
+
+      // Set page type to match other collection modules
+      pageData.type = "WebScience.pageNav"
       // If dev mode, set data locally. Otherwise, ping rally.
-      if (is_dev_mode){
-        browser.storage.local.set({[pageId]:pageData})
+      if (is_dev_mode) {
+        browser.storage.local.set({ [pageId]: pageData })
       } else {
-        rally.sendPing("pageNav", pageData);
+        rally.sendPing("pageNav", pageData)
       }
     } else {
       console.log("Survey not completed")
     }
   }, {
     matchPatterns: WebScience.Utilities.Matching.domainsToMatchPatterns(domains)
-  });
+  })
 }
-
 
 /**
  * Function: fullURLtoBaseURL
@@ -76,11 +73,11 @@ export async function startMeasurement ({
  * @param {string} urlString -a URL as a string
  * returns a string, the base URL
  */
-function fullURLtoBaseURL(urlString){
-  var pathArray = urlString.split( '/' );
-  var protocol = pathArray[0];
-  var host = pathArray[2];
-  var url = protocol + '//' + host;
+function fullURLtoBaseURL (urlString) {
+  const pathArray = urlString.split("/")
+  const protocol = pathArray[0]
+  const host = pathArray[2]
+  const url = protocol + "//" + host
 
   return url
 }

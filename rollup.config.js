@@ -2,10 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import commonjs from '@rollup/plugin-commonjs'
-import replace from '@rollup/plugin-replace'
-import resolve from '@rollup/plugin-node-resolve'
-import url from "@rollup/plugin-url";
+import commonjs from "@rollup/plugin-commonjs"
+import replace from "@rollup/plugin-replace"
+import resolve from "@rollup/plugin-node-resolve"
+import url from "@rollup/plugin-url"
 
 /**
  * Helper to detect developer mode.
@@ -14,15 +14,15 @@ import url from "@rollup/plugin-url";
  * @return {Boolean} whether or not developer mode is enabled.
  */
 function isDevMode (cliArgs) {
-  return Boolean(cliArgs['config-enable-developer-mode'])
+  return Boolean(cliArgs["config-enable-developer-mode"])
 }
 
 export default (cliArgs) => [
   {
-    input: 'src/background.js',
+    input: "src/background.js",
     output: {
-      file: 'dist/background.js',
-      sourcemap: isDevMode(cliArgs) ? 'inline' : false
+      file: "dist/background.js",
+      sourcemap: isDevMode(cliArgs) ? "inline" : false
     },
     plugins: [
       replace({
@@ -36,7 +36,7 @@ export default (cliArgs) => [
       }),
       commonjs(),
       url({
-        include: [ "src/content-scripts/*.js" ],
+        include: ["src/content-scripts/*.js"],
         limit: Number.MAX_VALUE // Inline regardless of content size
       })
     ]
